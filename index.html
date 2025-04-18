@@ -101,6 +101,10 @@
                                 name: "WeatherRadar"
                             });
                             map.overlayMapTypes.setAt(0, radarMapType);
+                            if(Object.keys(map).indexOf('tilesloading') > -1){
+                                while(map.tilesloading){}
+                            }
+                            //while(map.tilesloading){}
                             // if (map.overlayMapTypes.getLength() > 0) {
                             //     map.overlayMapTypes.removeAt(0);
                             // }
@@ -112,7 +116,7 @@
                                 tsindex++;
                             }
                             isUpdating = false;
-                        },400);
+                        },500);
                     });
                 });
             }
