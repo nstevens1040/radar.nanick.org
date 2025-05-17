@@ -4,8 +4,8 @@
         <title>weather map</title>
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <!--script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script-->
-        <script src="https://unpkg.com/@googlemaps/markerwithlabel/dist/index.min.js"></script>
-        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClmcgH_cG784BsSUmsFmUksNDPPMFWdQI&loading=async&v=weekly&libraries=places,geometry&callback=initRadar" defer></script>
+        <!--script src="https://unpkg.com/@googlemaps/markerwithlabel/dist/index.min.js"></script-->
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClmcgH_cG784BsSUmsFmUksNDPPMFWdQI&loading=async&v=weekly&libraries=geometry&callback=initRadar" defer></script>
         <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
         <!--link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet">
         <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script-->
@@ -25,6 +25,7 @@
         <script type="application/javascript">
             var map,geocoder,json_result,tsra_sorted;
             function initRadar(){
+                const { ColorScheme } = google.maps.importLibrary("core");
                 geocoder = new google.maps.Geocoder();
                 map = new google.maps.Map(document.getElementById("map"),{
                     mapTypeControlOptions: {
@@ -35,14 +36,16 @@
                         lng: -87.90040341077577
                     },
                     zoom: 6,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    colorScheme: google.maps.ColorScheme.DARK,
+                    renderingType: google.maps.RenderingType.VECTOR
                 });
                 var ele = document.createElement("div");
                 ele.id = "legend";
-                ele.style.cssText = "display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 5px; border: 2px solid black; border-radius: 0.8em; position: absolute; top: 100px; left: 20px; width: 220px; height: 50px; font-weight: bold; font-size: 24px; color: chartreuse; background-color: black; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;";
+                ele.style.cssText = "display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 5px; border: 1px solid rgba(186, 186, 186, 0.764); border-radius: 0.8em; position: absolute; top: 100px; left: 20px; width: 180px; height: 35px; font-size: 24px; color: white; background-color: rgba(186, 186, 186, 0.764); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;";//font-weight: bold;
                 var chil = document.createElement("div");
                 chil.id = "content";
-                chil.style.cssText = "flex: 0 0 150px;"
+                chil.style.cssText = "flex: 0 0 130px;"
                 ele.appendChild(chil);
                 document.body.appendChild(ele);
                 // var xpos = -3;
@@ -79,7 +82,7 @@
                             tsra.push(json_result.seriesInfo.radar.series[i].ts);
                         }
                         tsra_sorted = tsra.sort();
-                        radarInterval = setInterval(()=>{
+                        radarInterval = setInterval(async ()=>{
                             if (isUpdating) return;
                             isUpdating = true;
                             if(tsindex >= tsra_sorted.length){
@@ -95,7 +98,7 @@
                                         return "";
                                     }
                                     var z = map.zoom;
-                                    var uri = `https://api.weather.com/v3/TileServer/tile/radar?ts=${ts}&xyz=${norm.x}:${norm.y}:${zoom}&apiKey=e1f10a1e78da46f5b10a1e78da96f525&tile-size=512&meta=true`;
+                                    var uri = `https://api.weather.com/v3/TileServer/tile/radar?ts=${ts}&xyz=${norm.x}:${norm.y}:${zoom}&apiKey=e1f10a1e78da46f5b10a1e78da96f525&tile-size=512`;
                                     return uri;
                                 },
                                 tileSize: new google.maps.Size(256,256),
@@ -106,7 +109,7 @@
                             // if((ts % 3600) == 0){
                             //     map.overlayMapTypes.removeAt(0);
                             // }
-                            map.overlayMapTypes.setAt(0, radarMapType);
+                            await map.overlayMapTypes.setAt(0, radarMapType);
                             //if(Object.keys(map).indexOf('tilesloading') > -1){
                             //    while(map.tilesloading){}
                             //}
