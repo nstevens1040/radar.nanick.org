@@ -5,7 +5,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <!--script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script-->
         <script src="https://unpkg.com/@googlemaps/markerwithlabel/dist/index.min.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClmcgH_cG784BsSUmsFmUksNDPPMFWdQI&v=weekly&libraries=places,geometry" defer></script>
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClmcgH_cG784BsSUmsFmUksNDPPMFWdQI&loading=async&v=weekly&libraries=places,geometry&callback=initRadar" defer></script>
         <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
         <!--link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet">
         <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script-->
@@ -24,15 +24,7 @@
         </style>
         <script type="application/javascript">
             var map,geocoder,json_result,tsra_sorted;
-            function coord2Xyz(lat,lon,zoom){
-            	var lat_rad = (Math.PI / 180) * lat;
-            	var z = zoom;
-            	var x = Math.floor(((lon + 180) / 360) * (Math.pow(2,z)));
-            	var y = Math.floor((1 - Math.log(Math.tan(lat_rad) + (1 / Math.cos(lat_rad))) / Math.PI) / 2 * Math.pow(2,z));
-            	var tile = {x: x,y: y,z: z};
-            	return tile;
-            }
-            document.addEventListener("DOMContentLoaded", ()=>{
+            function initRadar(){
                 geocoder = new google.maps.Geocoder();
                 map = new google.maps.Map(document.getElementById("map"),{
                     mapTypeControlOptions: {
@@ -58,7 +50,18 @@
                 // var ypos = -1;
                 // var ymax = 1;
                 renderTiles();
-            });
+            }
+            function coord2Xyz(lat,lon,zoom){
+            	var lat_rad = (Math.PI / 180) * lat;
+            	var z = zoom;
+            	var x = Math.floor(((lon + 180) / 360) * (Math.pow(2,z)));
+            	var y = Math.floor((1 - Math.log(Math.tan(lat_rad) + (1 / Math.cos(lat_rad))) / Math.PI) / 2 * Math.pow(2,z));
+            	var tile = {x: x,y: y,z: z};
+            	return tile;
+            }
+            //document.addEventListener("DOMContentLoaded", ()=>{
+
+            //});
             // async function renderTilesAsync(){
             //     await renderTiles(); 
             // }
@@ -100,10 +103,13 @@
                                 minZoom: 0,
                                 name: "WeatherRadar"
                             });
+                            // if((ts % 3600) == 0){
+                            //     map.overlayMapTypes.removeAt(0);
+                            // }
                             map.overlayMapTypes.setAt(0, radarMapType);
-                            if(Object.keys(map).indexOf('tilesloading') > -1){
-                                while(map.tilesloading){}
-                            }
+                            //if(Object.keys(map).indexOf('tilesloading') > -1){
+                            //    while(map.tilesloading){}
+                            //}
                             //while(map.tilesloading){}
                             // if (map.overlayMapTypes.getLength() > 0) {
                             //     map.overlayMapTypes.removeAt(0);
