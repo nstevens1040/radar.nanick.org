@@ -76,10 +76,11 @@
                     var j = resolve.json();
                     j.then((resolve2)=>{
                         json_result = resolve2;
-                        var tscount = json_result.seriesInfo.radar.series.length;
+                        //var tscount = json_result.seriesInfo.radar.series.length;
+                        var tscount = json_result.seriesInfo.twcRadarMosaic.series.length;
                         var tsra = [];
-                        for(var i = 0; i < json_result.seriesInfo.radar.series.length; i++){
-                            tsra.push(json_result.seriesInfo.radar.series[i].ts);
+                        for(var i = 0; i < json_result.seriesInfo.twcRadarMosaic.series.length; i++){
+                            tsra.push(json_result.seriesInfo.twcRadarMosaic.series[i].ts);
                         }
                         tsra_sorted = tsra.sort();
                         radarInterval = setInterval(async ()=>{
@@ -98,11 +99,12 @@
                                         return "";
                                     }
                                     var z = map.zoom;
-                                    var uri = `https://api.weather.com/v3/TileServer/tile/radar?ts=${ts}&xyz=${norm.x}:${norm.y}:${zoom}&apiKey=e1f10a1e78da46f5b10a1e78da96f525&tile-size=512`;
+                                    var uri = `https://api.weather.com/v3/TileServer/tile/twcRadarMosaic?ts=${ts}&xyz=${norm.x}:${norm.y}:${zoom}&apiKey=e1f10a1e78da46f5b10a1e78da96f525&tile-size=256`;
+                                    //var uri = `https://api.weather.com/v3/TileServer/tile/radar?ts=${ts}&xyz=${norm.x}:${norm.y}:${zoom}&apiKey=e1f10a1e78da46f5b10a1e78da96f525&tile-size=512`;
                                     return uri;
                                 },
                                 tileSize: new google.maps.Size(256,256),
-                                maxZoom: 17,
+                                maxZoom: 13,
                                 minZoom: 0,
                                 name: "WeatherRadar"
                             });
