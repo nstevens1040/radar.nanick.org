@@ -23,6 +23,7 @@
             }
         </style>
         <script type="application/javascript">
+            //                    renderingType: google.maps.RenderingType.RASTER
             var map,geocoder,json_result,tsra_sorted;
             function initRadar(){
                 const { ColorScheme } = google.maps.importLibrary("core");
@@ -37,8 +38,7 @@
                     },
                     zoom: 8,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    colorScheme: google.maps.ColorScheme.DARK,
-                    renderingType: google.maps.RenderingType.VECTOR
+                    colorScheme: google.maps.ColorScheme.DARK
                 });
                 var ele = document.createElement("div");
                 ele.id = "legend";
